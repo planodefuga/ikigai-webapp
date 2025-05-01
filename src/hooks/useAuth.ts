@@ -118,6 +118,8 @@ export function useAuth() {
           progresso: {
             ...state.userData?.progresso,
             pixConfirmado: true,
+            respostas: state.userData?.progresso?.respostas || {},
+            ultimaAtualizacao: new Date(),
             ...(state.userData?.progresso?.etapaAtual !== undefined && {
               etapaAtual: state.userData.progresso.etapaAtual
             })
@@ -129,21 +131,40 @@ export function useAuth() {
         throw new Error('Erro ao confirmar pagamento');
       }
 
-      // Atualiza o estado local
-      setState((prev) => ({
-        ...prev,
-        userData: prev.userData ? {
-          ...prev.userData,
-          progresso: {
-            ...prev.userData.progresso,
-            pixConfirmado: true,
-            ...(prev.userData.progresso?.etapaAtual !== undefined && {
-              etapaAtual: prev.userData.progresso.etapaAtual
-            })
-          }
-        } : null,
-        loading: false
-      }));
+      setState((prev) => {
+        if (!prev.userData) {
+          return {
+            ...prev,
+            userData: {
+              id: prev.user?.uid || '',
+              email: prev.user?.email || '',
+              nome: prev.user?.displayName || '',
+              progresso: {
+                pixConfirmado: true,
+                etapaAtual: 0,
+                respostas: {},
+                ultimaAtualizacao: new Date()
+              }
+            },
+            loading: false
+          };
+        }
+
+        return {
+          ...prev,
+          userData: {
+            ...prev.userData,
+            progresso: {
+              ...prev.userData.progresso,
+              pixConfirmado: true,
+              respostas: prev.userData.progresso?.respostas || {},
+              etapaAtual: prev.userData.progresso?.etapaAtual || 0,
+              ultimaAtualizacao: new Date()
+            }
+          },
+          loading: false
+        };
+      });
     } catch (error) {
       setState((prev) => ({
         ...prev,
