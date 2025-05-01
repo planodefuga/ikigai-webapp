@@ -34,4 +34,7 @@ const adminApp = getApps().length === 0
   : getApps()[0];
 
 export const adminAuth = getAdminAuth(adminApp);
-export const adminDb = getAdminFirestore(adminApp); 
+export const adminDb = getAdminFirestore(adminApp);
+
+export * from './firebase-client';
+export * from './firebase-admin'; 
