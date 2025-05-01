@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 
 export default function Comunidade() {
   const router = useRouter();
-  const { user, loading, confirmarPagamento } = useAuth();
+  const { user, loading, confirmarPagamento, userData } = useAuth();
   const [showPaymentInfo, setShowPaymentInfo] = useState(false);
 
   useEffect(() => {
@@ -46,12 +46,12 @@ export default function Comunidade() {
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-2xl mx-auto text-center">
             <h1 className="heading-1 mb-6">
-              {user.progresso.pixConfirmado 
+              {userData?.progresso?.pixConfirmado 
                 ? 'Bem-vindo à Comunidade Ikigai!'
                 : 'Confirme seu Pagamento'}
             </h1>
             
-            {user.progresso.pixConfirmado ? (
+            {userData?.progresso?.pixConfirmado ? (
               <>
                 <p className="text-xl text-gray-700 mb-8">
                   Você já está logado. Acesse sua área de membros para começar sua jornada.
