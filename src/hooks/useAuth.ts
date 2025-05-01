@@ -117,7 +117,10 @@ export function useAuth() {
         body: JSON.stringify({
           progresso: {
             ...state.userData?.progresso,
-            pixConfirmado: true
+            pixConfirmado: true,
+            ...(state.userData?.progresso?.etapaAtual !== undefined && {
+              etapaAtual: state.userData.progresso.etapaAtual
+            })
           }
         })
       });
@@ -133,7 +136,10 @@ export function useAuth() {
           ...prev.userData,
           progresso: {
             ...prev.userData.progresso,
-            pixConfirmado: true
+            pixConfirmado: true,
+            ...(prev.userData.progresso?.etapaAtual !== undefined && {
+              etapaAtual: prev.userData.progresso.etapaAtual
+            })
           }
         } : null,
         loading: false
