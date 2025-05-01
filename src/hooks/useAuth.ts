@@ -175,10 +175,106 @@ export function useAuth() {
     }
   };
 
+  const marcarAulaConcluida = async (aulaId: string) => {
+    if (!state.user) {
+      throw new Error('Usuário não autenticado');
+    }
+
+    try {
+      setState((prev) => ({ ...prev, loading: true }));
+      const token = await state.user.getIdToken();
+      
+      const response = await fetch('/api/user/progress', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          progresso: {
+            ...state.userData?.progresso,
+            aulasConcluidas: {
+              ...state.userData?.progresso?.aulasConcluidas,
+              [aulaId]: true
+            },
+            ultimaAtualizacao: new Date()
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao marcar aula como concluída');
+      }
+
+      const updatedData = await response.json();
+      setState((prev) => ({
+        ...prev,
+        userData: updatedData,
+        loading: false
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        error: error as Error,
+        loading: false
+      }));
+      throw error;
+    }
+  };
+
+  const marcarExercicioRespondido = async (exercicioId: string, resposta: string | number | boolean) => {
+    if (!state.user) {
+      throw new Error('Usuário não autenticado');
+    }
+
+    try {
+      setState((prev) => ({ ...prev, loading: true }));
+      const token = await state.user.getIdToken();
+      
+      const response = await fetch('/api/user/progress', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          progresso: {
+            ...state.userData?.progresso,
+            respostas: {
+              ...state.userData?.progresso?.respostas,
+              [exercicioId]: resposta
+            },
+            ultimaAtualizacao: new Date()
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao salvar resposta do exercício');
+      }
+
+      const updatedData = await response.json();
+      setState((prev) => ({
+        ...prev,
+        userData: updatedData,
+        loading: false
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        error: error as Error,
+        loading: false
+      }));
+      throw error;
+    }
+  };
+
   return {
     ...state,
     signIn,
     signOut,
-    confirmarPagamento
+    confirmarPagamento,
+    marcarAulaConcluida,
+    marcarExercicioRespondido
   };
 } 

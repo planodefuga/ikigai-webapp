@@ -1,10 +1,13 @@
 export interface UserProgress {
+  pixConfirmado: boolean;
   etapaAtual: number;
   respostas: {
     [key: string]: string | number | boolean;
   };
+  aulasConcluidas: {
+    [key: string]: boolean;
+  };
   ultimaAtualizacao: Date;
-  pixConfirmado?: boolean;
 }
 
 export interface UserData {
@@ -12,5 +15,5 @@ export interface UserData {
   email: string;
   nome: string;
   foto?: string;
-  progresso?: UserProgress;
+  progresso: UserProgress;
 } 
