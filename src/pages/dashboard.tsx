@@ -1,12 +1,42 @@
 import { useRouter } from 'next/router';
 import { Button } from '../components/Button';
 import { cronograma } from '../data/cronograma';
+import { exercicios } from '../data/exercicios';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { useAuth } from '../hooks/useAuth';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function Dashboard() {
   const router = useRouter();
   const { user, userData, marcarAulaConcluida, marcarExercicioRespondido } = useAuth();
+  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+
+  const handleMarcarAula = async (aulaId: string) => {
+    try {
+      setLoading(prev => ({ ...prev, [aulaId]: true }));
+      await marcarAulaConcluida(aulaId);
+      toast.success('Aula marcada como concluída!');
+    } catch (error) {
+      toast.error('Erro ao marcar aula como concluída');
+      console.error('Erro:', error);
+    } finally {
+      setLoading(prev => ({ ...prev, [aulaId]: false }));
+    }
+  };
+
+  const handleMarcarExercicio = async (exercicioId: string) => {
+    try {
+      setLoading(prev => ({ ...prev, [exercicioId]: true }));
+      await marcarExercicioRespondido(exercicioId, true);
+      toast.success('Exercício marcado como respondido!');
+    } catch (error) {
+      toast.error('Erro ao marcar exercício como respondido');
+      console.error('Erro:', error);
+    } finally {
+      setLoading(prev => ({ ...prev, [exercicioId]: false }));
+    }
+  };
 
   return (
     <ProtectedRoute requirePayment>
@@ -59,7 +89,7 @@ export default function Dashboard() {
               <div className="bg-white rounded-2xl shadow-xl p-8">
                 <h2 className="heading-2 mb-6">Próximas Aulas</h2>
                 <div className="space-y-4">
-                  {cronograma.map((aula, index) => (
+                  {cronograma.map((aula) => (
                     <div 
                       key={aula.id}
                       className={`p-4 rounded-lg border ${
@@ -78,9 +108,10 @@ export default function Dashboard() {
                         ) : (
                           <Button
                             size="sm"
-                            onClick={() => marcarAulaConcluida(aula.id)}
+                            onClick={() => handleMarcarAula(aula.id)}
+                            disabled={loading[aula.id]}
                           >
-                            Marcar como Concluída
+                            {loading[aula.id] ? 'Processando...' : 'Marcar como Concluída'}
                           </Button>
                         )}
                       </div>
@@ -111,9 +142,10 @@ export default function Dashboard() {
                         ) : (
                           <Button
                             size="sm"
-                            onClick={() => marcarExercicioRespondido(exercicio.id, true)}
+                            onClick={() => handleMarcarExercicio(exercicio.id)}
+                            disabled={loading[exercicio.id]}
                           >
-                            Marcar como Respondido
+                            {loading[exercicio.id] ? 'Processando...' : 'Marcar como Respondido'}
                           </Button>
                         )}
                       </div>
