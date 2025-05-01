@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { adminAuth, adminDb } from '../../lib/firebase-admin';
+
+const { adminAuth, adminDb } = require('../../lib/firebase-admin');
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Verifica o token de autenticação
