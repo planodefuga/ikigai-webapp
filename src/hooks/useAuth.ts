@@ -99,9 +99,59 @@ export function useAuth() {
     }
   };
 
+  const confirmarPagamento = async () => {
+    if (!state.user) {
+      throw new Error('Usuário não autenticado');
+    }
+
+    try {
+      setState((prev) => ({ ...prev, loading: true }));
+      const token = await state.user.getIdToken();
+      
+      const response = await fetch('/api/user/progress', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          progresso: {
+            ...state.userData?.progresso,
+            pixConfirmado: true
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao confirmar pagamento');
+      }
+
+      // Atualiza o estado local
+      setState((prev) => ({
+        ...prev,
+        userData: prev.userData ? {
+          ...prev.userData,
+          progresso: {
+            ...prev.userData.progresso,
+            pixConfirmado: true
+          }
+        } : null,
+        loading: false
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        error: error as Error,
+        loading: false
+      }));
+      throw error;
+    }
+  };
+
   return {
     ...state,
     signIn,
     signOut,
+    confirmarPagamento
   };
 } 
