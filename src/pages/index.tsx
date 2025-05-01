@@ -88,7 +88,23 @@ export default function Home() {
 
       {/* 📣 Rodapé */}
       <footer className="text-center mt-10 border-t border-zinc-700 pt-6">
-        <p className="text-sm text-zinc-400">Não fuja depois. Fuja agora. A liberdade tem prazo.</p>
+        <p className="text-sm text-zinc-400 mb-4">Não fuja depois. Fuja agora. A liberdade tem prazo.</p>
+        <div className="flex justify-center gap-4 text-sm text-zinc-400">
+          <a 
+            href="https://www.instagram.com/tidilodo/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors"
+          >
+            @tidilodo
+          </a>
+          <a 
+            href="mailto:planodefugaikigai@gmail.com"
+            className="hover:text-white transition-colors"
+          >
+            planodefugaikigai@gmail.com
+          </a>
+        </div>
       </footer>
     </div>
   )
