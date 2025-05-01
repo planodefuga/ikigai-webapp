@@ -1,15 +1,15 @@
 export interface UserProgress {
-  pixConfirmado: boolean;
-  aulasConcluidas: string[];
-  exerciciosRespondidos: {
-    [key: string]: boolean;
+  etapaAtual: number;
+  respostas: {
+    [key: string]: string | number | boolean;
   };
+  ultimaAtualizacao: Date;
 }
 
 export interface UserData {
-  uid: string;
+  id: string;
   email: string;
-  displayName: string;
-  photoURL?: string;
-  progresso: UserProgress;
+  nome: string;
+  foto?: string;
+  progresso?: UserProgress;
 } 
