@@ -3,9 +3,26 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
   const router = useRouter()
+  const [contador, setContador] = useState(259200) // 3 dias em segundos
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setContador((segundos) => (segundos > 0 ? segundos - 1 : 0))
+    }, 1000)
+    return () => clearInterval(intervalo)
+  }, [])
+
+  const formatarTempo = (s: number) => {
+    const d = Math.floor(s / 86400)
+    const h = Math.floor((s % 86400) / 3600)
+    const m = Math.floor((s % 3600) / 60)
+    const sec = s % 60
+    return `${d}d ${h}h ${m}m ${sec}s`
+  }
 
   return (
     <div className="min-h-screen bg-black text-white px-6 py-10 flex flex-col gap-10">
@@ -33,6 +50,8 @@ export default function Home() {
       {/* 📥 Pré-venda do Livro */}
       <section className="bg-yellow-800 p-8 rounded-xl text-center">
         <h2 className="text-3xl font-bold mb-4">PRÉ-VENDA LIBERADA DIA 21</h2>
+        <p className="mb-2 text-black font-semibold">O tempo tá correndo...</p>
+        <div className="text-2xl font-mono text-black mb-4">{formatarTempo(contador)}</div>
         <p className="mb-4">O livro que vai destruir suas amarras internas. Se prepara pra ser desmontado página por página.</p>
         <Button className="bg-black hover:bg-white text-yellow-400 hover:text-black" onClick={() => router.push('/livro')}>
           Quero Ser o Primeiro a Fugir
