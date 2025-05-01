@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { adminAuth } from '../../lib/firebase-admin';
+import { adminAuth, adminDb } from '../../lib/firebase-admin';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -12,6 +12,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Verifica o token com o Firebase Admin
     const decodedToken = await adminAuth.verifyIdToken(idToken);
     
+    // Busca ou cria o documento do usuário no Firestore
+    const userRef = adminDb.collection('users').doc(decodedToken.uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      // Cria o documento do usuário com dados iniciais
+      await userRef.set({
+        id: decodedToken.uid,
+        email: decodedToken.email,
+        nome: decodedToken.name || decodedToken.email?.split('@')[0] || 'Usuário',
+        foto: decodedToken.picture,
+        progresso: {
+          etapaAtual: 1,
+          respostas: {},
+          ultimaAtualizacao: new Date()
+        }
+      });
+    }
+
     // Retorna os dados do usuário
     return res.status(200).json({
       uid: decodedToken.uid,

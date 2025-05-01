@@ -4,8 +4,9 @@ import {
   signInWithPopup, 
   signOut as firebaseSignOut 
 } from 'firebase/auth';
+import { UserData } from '../types/user';
 
-export const loginWithGoogle = async () => {
+export const loginWithGoogle = async (): Promise<UserData> => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -26,7 +27,18 @@ export const loginWithGoogle = async () => {
       throw new Error('Falha na autenticação');
     }
 
-    return await response.json();
+    // Busca os dados completos do usuário
+    const userResponse = await fetch('/api/user/progress', {
+      headers: {
+        'Authorization': `Bearer ${idToken}`
+      }
+    });
+
+    if (!userResponse.ok) {
+      throw new Error('Falha ao buscar dados do usuário');
+    }
+
+    return await userResponse.json();
   } catch (error) {
     console.error('Erro no login:', error);
     throw error;
