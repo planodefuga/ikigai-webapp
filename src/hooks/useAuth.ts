@@ -143,6 +143,7 @@ export function useAuth() {
                 pixConfirmado: true,
                 etapaAtual: 0,
                 respostas: {},
+                aulasConcluidas: {},
                 ultimaAtualizacao: new Date()
               }
             },
@@ -158,6 +159,7 @@ export function useAuth() {
               ...prev.userData.progresso,
               pixConfirmado: true,
               respostas: prev.userData.progresso?.respostas || {},
+              aulasConcluidas: prev.userData.progresso?.aulasConcluidas || {},
               etapaAtual: prev.userData.progresso?.etapaAtual || 0,
               ultimaAtualizacao: new Date()
             }
