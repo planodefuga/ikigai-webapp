@@ -4,6 +4,7 @@ export interface UserProgress {
     [key: string]: string | number | boolean;
   };
   ultimaAtualizacao: Date;
+  pixConfirmado?: boolean;
 }
 
 export interface UserData {

@@ -26,7 +26,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         progresso: {
           etapaAtual: 1,
           respostas: {},
-          ultimaAtualizacao: new Date()
+          ultimaAtualizacao: new Date(),
+          pixConfirmado: false
         }
       });
     }

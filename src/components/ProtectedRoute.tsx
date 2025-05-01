@@ -9,17 +9,17 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, requirePayment = false }: ProtectedRouteProps) {
   const router = useRouter();
-  const { user, loading } = useAuth();
+  const { user, userData, loading, error } = useAuth();
 
   useEffect(() => {
     if (!loading) {
       if (!user) {
         router.push('/comunidade');
-      } else if (requirePayment && !user.progresso.pixConfirmado) {
+      } else if (requirePayment && !userData?.progresso?.pixConfirmado) {
         router.push('/comunidade?payment=required');
       }
     }
-  }, [user, loading, requirePayment, router]);
+  }, [user, userData, loading, requirePayment, router]);
 
   if (loading) {
     return (
@@ -29,7 +29,7 @@ export function ProtectedRoute({ children, requirePayment = false }: ProtectedRo
     );
   }
 
-  if (!user || (requirePayment && !user.progresso.pixConfirmado)) {
+  if (!user || (requirePayment && !userData?.progresso?.pixConfirmado)) {
     return null;
   }
 
